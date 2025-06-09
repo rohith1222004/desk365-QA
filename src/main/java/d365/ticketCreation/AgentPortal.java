@@ -19,7 +19,6 @@ public class AgentPortal {
     private static final int TIMEOUT = 30;
     String filePath = "C:\\Users\\Asus\\Downloads\\Tkt_Lst_All Tickets-w-changes_Created_Time_Last_4_weeks_Mar_05_2025 (1).csv";
 
-
     // Locators
     private final By contactField = By.xpath("//mat-chip-grid//input");
     private final By contactDropdown = By.xpath("//div[contains(@class, 'mat-mdc-autocomplete-panel')]//mat-option[1]");
@@ -57,7 +56,8 @@ public class AgentPortal {
         System.out.println("📌 Navigating to Ticket Creation Page...");
         WebElement newButton = waitForElementClickable(By.xpath("//button[.//span[text()='New']]"));
         newButton.click();
-        WebElement newTicketOption = waitForElementClickable(By.xpath("//div[contains(@class,'mat-mdc-menu-content')]//button[1]"));
+        WebElement newTicketOption = waitForElementClickable(
+                By.xpath("//div[contains(@class,'mat-mdc-menu-content')]//button[1]"));
         newTicketOption.click();
         // ✅ Ensure the ticket creation form loads
         wait.until(ExpectedConditions.visibilityOfElementLocated(subjectField));
@@ -70,8 +70,8 @@ public class AgentPortal {
         enterContact(contact);
         enterTextField(subjectField, subject, "Subject");
         enterDescription(description);
-//        uploadAttachment(filePath);  // Upload file attachment after description
-//        enterContact(contact);
+        // uploadAttachment(filePath); // Upload file attachment after description
+        // enterContact(contact);
 
         // Updated Dropdown Selections
         selectDropdownOption(statusDropdown, "Pending", "Status");
@@ -91,25 +91,24 @@ public class AgentPortal {
         enterTextField(decimalField, "123.45", "Decimal Field");
 
         selectDropdownAndEnterText(
-                "(//div[contains(@class, 'mat-mdc-form-field-infix ng-tns')])[16]",  // Dropdown XPath
-                "//*[@id=\"mat-input-7\"]",  // Text Field XPath
+                "(//div[contains(@class, 'mat-mdc-form-field-infix ng-tns')])[16]", // Dropdown XPath
+                "//*[@id=\"mat-input-7\"]", // Text Field XPath
                 "Dropdown with Sections",
-                "Custom Field"
-        );
+                "Custom Field");
 
         // ✅ Selecting Nested Dropdowns
         selectNestedDropdown(
                 "(//div[contains(@class, 'mat-mdc-form-field-infix ng-tns')])[18]",
                 "(//div[contains(@class, 'mat-mdc-form-field-infix ng-tns')])[19]",
-                "Nested Dropdown", "Level 1 Dropdown"
-        );
+                "Nested Dropdown", "Level 1 Dropdown");
 
         clickCreateButton();
     }
 
     public void clickCreateButton() {
         try {
-            WebElement createButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/app-root/app-main-nav/mat-sidenav-container/mat-sidenav-content/div/app-createticket/div/div/div/div/div/div[2]/div/div[1]/app-button-spinner/button/span[2]/div/span[2]")));
+            WebElement createButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                    "/html/body/app-root/app-main-nav/mat-sidenav-container/mat-sidenav-content/div/app-createticket/div/div/div/div/div/div[2]/div/div[1]/app-button-spinner/button/span[2]/div/span[2]")));
 
             // Scroll to the button to ensure visibility
             scrollToElement(createButton);
@@ -175,7 +174,8 @@ public class AgentPortal {
         }
     }
 
-    private void selectDropdownAndEnterText(String dropdownXPath, String fieldXPath, String dropdownName, String fieldValue) {
+    private void selectDropdownAndEnterText(String dropdownXPath, String fieldXPath, String dropdownName,
+            String fieldValue) {
         try {
             WebElement dropdown = waitForElementClickable(By.xpath(dropdownXPath));
             jsExecutor.executeScript("arguments[0].scrollIntoView(true);", dropdown);
@@ -195,7 +195,8 @@ public class AgentPortal {
         }
     }
 
-    private void selectNestedDropdown(String firstDropdownXPath, String secondDropdownXPath, String firstDropdownName, String secondDropdownName) {
+    private void selectNestedDropdown(String firstDropdownXPath, String secondDropdownXPath, String firstDropdownName,
+            String secondDropdownName) {
         try {
             WebElement firstDropdown = waitForElementClickable(By.xpath(firstDropdownXPath));
             jsExecutor.executeScript("arguments[0].scrollIntoView(true);", firstDropdown);
@@ -226,7 +227,8 @@ public class AgentPortal {
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
             String formattedDate = currentDate.format(formatter);
-            WebElement dateOption = waitForElementClickable(By.xpath("//button[contains(@aria-label, '" + formattedDate + "')]"));
+            WebElement dateOption = waitForElementClickable(
+                    By.xpath("//button[contains(@aria-label, '" + formattedDate + "')]"));
             dateOption.click();
             System.out.println("✅ Selected Date: " + formattedDate);
         } catch (Exception e) {
@@ -238,7 +240,8 @@ public class AgentPortal {
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             waitForOverlayToDisappear();
-            WebElement attachmentIcon = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//mat-icon[contains(@class, 'mat-icon')])[11]")));
+            WebElement attachmentIcon = wait.until(ExpectedConditions
+                    .elementToBeClickable(By.xpath("(//mat-icon[contains(@class, 'mat-icon')])[11]")));
             scrollToElement(attachmentIcon);
 
             try {
@@ -260,11 +263,32 @@ public class AgentPortal {
         }
     }
 
+    // private void waitForOverlayToDisappear() {
+    // try {
+    // By overlayLocator = By.className("cdk-overlay-backdrop");
+    // wait.until(ExpectedConditions.invisibilityOfElementLocated(overlayLocator));
+    // System.out.println("✅ Overlay disappeared, proceeding...");
+    // } catch (Exception e) {
+    // System.out.println("ℹ️ No overlay detected, proceeding...");
+    // }
+    // }
+
     private void waitForOverlayToDisappear() {
         try {
-            By overlayLocator = By.className("cdk-overlay-backdrop");
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(overlayLocator));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20)); // Increase timeout if needed
+
+            // Wait for both snackbar and any other overlay/modal to disappear
+            wait.until(ExpectedConditions
+                    .invisibilityOfElementLocated(By.cssSelector("div.mat-mdc-snack-bar-label.mdc-snackbar__label")));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.cdk-overlay-backdrop")));
+
+            // Wait for overlays to not be interactable anymore (optional)
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.mat-mdc-snack-bar-label")));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.cdk-overlay-backdrop")));
+
             System.out.println("✅ Overlay disappeared, proceeding...");
+        } catch (TimeoutException e) {
+            System.out.println("❌ Overlay didn't disappear within the time frame, proceeding anyway...");
         } catch (Exception e) {
             System.out.println("ℹ️ No overlay detected, proceeding...");
         }
